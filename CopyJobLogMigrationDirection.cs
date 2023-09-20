@@ -1,0 +1,5 @@
+enum CopyJobLogMigrationDirection
+    {
+        Export,
+        Import
+    }
