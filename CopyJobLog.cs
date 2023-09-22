@@ -10,8 +10,8 @@ class CopyJobLog
         public CopyJobLogMigrationDirection MigrationDirection { get; set; }
         public string Url { get; set; }
         public int FilesCreated { get; set; }//Set for Events:JobProgress,
-        public int BytesProcessed { get; set; }//Set for Events:JobProgress,
-        public int TotalExpectedBytes { get; set; }
+        public long BytesProcessed { get; set; }//Set for Events:JobProgress,
+        public long TotalExpectedBytes { get; set; }
         public int ObjectsProcessed { get; set; }//Set for Events:JobProgress,
         public int TotalExpectedSPObjects { get; set; }//Set for Events:JobProgress,
         public int TotalErrors { get; set; }//Set for Events:JobProgress,

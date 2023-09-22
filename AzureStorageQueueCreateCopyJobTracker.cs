@@ -12,7 +12,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using PnP.Core.Model.SharePoint;
 using PnP.Core.Services;
-
 class AzureStorageQueueCreateCopyJobTracker 
     {
         ILogger<AzureStorageQueueCreateCopyJobTracker> logger;
@@ -24,8 +23,7 @@ class AzureStorageQueueCreateCopyJobTracker
         public bool IsJobCompleted(PnPContext context, ICopyMigrationInfo info)
     {
         //ICopyJobProgress result = context.Site.GetCopyJobProgressAsync(info); /This gives detailed status.But here we are checking from Azure queue where the job reports.
-        //.GetMigrationJobStatus(info.JobId);//This is not present in PnP.Core
-        //https://learn.microsoft.com/en-us/previous-versions/office/sharepoint-csom/mt143033(v=office.15)
+        
         MigrationJobState state = GetJobStatus(context, info);
         if (state == MigrationJobState.None) //Job level says None is completed (success/failure)
         {
@@ -40,15 +38,15 @@ class AzureStorageQueueCreateCopyJobTracker
                 {
                     if (log.TotalWarnings > 0)
                     {
-                        logger.LogWarning($"{info.JobId} Completed.warnings:{log.TotalWarnings},FilesCreated:{log.FilesCreated}, TotalExpectedSPOObjects:{log.TotalExpectedSPObjects}, objectsProcessed{log.ObjectsProcessed}, TotalExpectedBytes:{log.TotalExpectedBytes}, BytesProcessed:{log.BytesProcessed},TotalDurationInMs{log.TotalDurationInMs}");
+                        logger.LogWarning($"{info.JobId} Completed. Warnings:{log.TotalWarnings},FilesCreated:{log.FilesCreated}, TotalExpectedSPOObjects:{log.TotalExpectedSPObjects}, objectsProcessed:{log.ObjectsProcessed}, TotalExpectedBytes:{log.TotalExpectedBytes}, BytesProcessed:{log.BytesProcessed}, TotalDurationInMs:{log.TotalDurationInMs}");
                     }
                     else if (log.TotalErrors > 0)
                     {
-                        logger.LogError($"{info.JobId} completed with Errors: {log.TotalErrors}. FilesCreated:{log.FilesCreated},  TotalExpectedSPOObjects:{log.TotalExpectedSPObjects}, objectsProcessed{log.ObjectsProcessed}, TotalExpectedBytes:{log.TotalExpectedBytes}, BytesProcessed:{log.BytesProcessed},TotalDurationInMs{log.TotalDurationInMs}");
+                        logger.LogError($"{info.JobId} completed with Errors: {log.TotalErrors}. FilesCreated:{log.FilesCreated}, TotalExpectedSPOObjects:{log.TotalExpectedSPObjects}, objectsProcessed:{log.ObjectsProcessed}, TotalExpectedBytes:{log.TotalExpectedBytes}, BytesProcessed:{log.BytesProcessed}, TotalDurationInMs:{log.TotalDurationInMs}");
                     }
                     else
                     {
-                        logger.LogInformation($"{info.JobId} completed without warnings/errors. FilesCreated:{log.FilesCreated}, TotalExpectedSPOObjects:{log.TotalExpectedSPObjects}, objectsProcessed{log.ObjectsProcessed}, TotalExpectedBytes:{log.TotalExpectedBytes}, BytesProcessed:{log.BytesProcessed},TotalDurationInMs{log.TotalDurationInMs}");
+                        logger.LogInformation($"{info.JobId} completed without warnings/errors. FilesCreated:{log.FilesCreated}, TotalExpectedSPOObjects:{log.TotalExpectedSPObjects}, objectsProcessed:{log.ObjectsProcessed}, TotalExpectedBytes:{log.TotalExpectedBytes}, BytesProcessed:{log.BytesProcessed}, TotalDurationInMs:{log.TotalDurationInMs}");
                     }
                 });
                 return true;
@@ -62,6 +60,17 @@ class AzureStorageQueueCreateCopyJobTracker
         return false;
     }
 
+    /// <summary>
+    /// Get high level job status
+    /// </summary>
+    /// <param name="context"></param>
+    /// <param name="info"></param>
+    /// <returns></returns>
+    /// <remarks>
+    /// site..GetMigrationJobStatus(info.JobId);//This is not present in PnP.Core
+    /// Details https://github.com/pnp/pnpcore/issues/1277
+    /// API Reference https://learn.microsoft.com/en-us/previous-versions/office/sharepoint-csom/mt143033(v=office.15)
+    /// </remarks>
     private static MigrationJobState GetJobStatus(PnPContext context, ICopyMigrationInfo info)
     {
         var requestBody = new

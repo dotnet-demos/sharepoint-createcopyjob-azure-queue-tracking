@@ -2,7 +2,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PnP.Core.Model.SharePoint;
 using PnP.Core.Services;
-
 class SharePointCopyOperations
 {
     private readonly ILogger<SharePointCopyOperations> logger;
@@ -30,15 +29,12 @@ class SharePointCopyOperations
         .Where(folder => !folder.ServerRelativeUrl.EndsWith("Forms"))
         .Select<IFolder, string>(folder => $"{rootSiteHostName}{folder.ServerRelativeUrl}")
         .ToArray();
-        // absoluteUrlOfSourceFolders
-        // .ToList()
-        // .ForEach(folder=>logger.LogInformation($"{folder}"));
         var infos = await context.Site.CreateCopyJobsAsync(absoluteUrlOfSourceFolders,config["DestinationLibraryAbsoluteUrl"], GetCopyMigrationOptions());
         ICollection<Guid> trackingJobGuids = infos.Select(info => info.JobId).ToList();
                    do
                    {
                        logger.LogInformation("Going to sleep for 10 secs before checking status.");
-                       Thread.Sleep(TimeSpan.FromSeconds(1));
+                       Thread.Sleep(TimeSpan.FromSeconds(10));
                        //To Track the progress on each item, we need loop and pooling in there are more than 1 items in collection.
                        infos
                        .Where(info => trackingJobGuids.Contains(info.JobId))
