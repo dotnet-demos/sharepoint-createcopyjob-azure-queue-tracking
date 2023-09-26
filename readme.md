@@ -8,7 +8,7 @@
   - SourceLibraryName - name of drive/document library/list whatever you used to call it.
   - DestinationLibraryAbsoluteUrl - This is the library in the destination site.
   - Azure AD - Currently the sample uses ROPC flow to authenticate to SharePoint. Feel free to change the code in case you need to use the Azure app registration based Workload identity mechanism.
-    
+- Permissions - The user/app triggering the operation should have [permission on both source and destination](https://pnp.github.io/pnpcore/using-the-sdk/sites-copymovecontent.html).
 # Environment
 - .Net 6
 - Visual Studio Code
