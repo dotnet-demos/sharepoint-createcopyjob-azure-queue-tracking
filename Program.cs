@@ -10,6 +10,7 @@ IHostBuilder builder = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostBuilderContext,services) => {
         services.AddSingleton<SharePointCopyOperations>();
         services.AddSingleton<AzureStorageQueueCreateCopyJobTracker>();
+        services.AddSingleton<IMigrationJobStatusProvider,PnPFrameworkMigrationJobStatusProvider>();
         services.AddPnPCore(options=>
         {
             options.Sites.Add(hostBuilderContext.Configuration["SourceSiteRootUrl"],new PnPCoreSiteOptions()

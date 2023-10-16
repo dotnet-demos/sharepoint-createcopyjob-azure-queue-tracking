@@ -16,6 +16,7 @@
     <PackageReference Include="NewtonSoft.Json" Version="13.0.3" />
     <PackageReference Include="PnP.Core" Version="1.10.0" />
     <PackageReference Include="PnP.Core.auth" Version="1.10.0" />
+    <PackageReference Include="pnp.framework" Version="1.13.0" />
   </ItemGroup>
 <ItemGroup>
  <None Update="appsettings.json">
